@@ -1,0 +1,71 @@
+{% extends "admin/base_site.html" %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">Beranda</a> ›
+    <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a> ›
+    <a href="{% url 'admin:prediksi_datapadi_changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a> ›
+    Riwayat input
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <p>Riwayat penambahan, perubahan, dan penghapusan data melalui Django Admin.</p>
+
+    {% if page_obj.object_list %}
+    <div class="module">
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">Waktu</th>
+                    <th scope="col">Pengguna</th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Aksi</th>
+                    <th scope="col">Perubahan</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for catatan in page_obj %}
+                <tr>
+                    <td>{{ catatan.action_time|date:"d M Y, H:i" }}</td>
+                    <td>{{ catatan.user.get_username|default:"Pengguna dihapus" }}</td>
+                    <td>{{ catatan.object_repr }}</td>
+                    <td>
+                        {% if catatan.is_addition %}
+                            Ditambahkan
+                        {% elif catatan.is_change %}
+                            Diubah
+                        {% elif catatan.is_deletion %}
+                            Dihapus
+                        {% endif %}
+                    </td>
+                    <td>{{ catatan.get_change_message|linebreaksbr }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <p class="paginator">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">Sebelumnya</a>
+        {% endif %}
+        Halaman {{ page_obj.number }} dari {{ page_obj.paginator.num_pages }}
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Berikutnya</a>
+        {% endif %}
+    </p>
+    {% endif %}
+    {% else %}
+    <p class="help">Belum ada riwayat perubahan data.</p>
+    {% endif %}
+
+    <p>
+        <a class="button" href="{% url 'admin:prediksi_datapadi_changelist' %}">
+            Kembali ke Data Padi
+        </a>
+    </p>
+</div>
+{% endblock %}

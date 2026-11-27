@@ -1,0 +1,321 @@
+{% extends 'base.html' %}
+
+{% block title %}Tentang PadiPredict{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-page {
+        margin: 0 auto;
+        max-width: 1250px;
+    }
+
+    .about-hero {
+        align-items: center;
+        background: linear-gradient(120deg, #163c32, #286341);
+        border-radius: 18px;
+        color: white;
+        display: grid;
+        gap: 24px;
+        grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+        margin-bottom: 18px;
+        padding: 26px;
+    }
+
+    .about-kicker {
+        color: #b9d2c5;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+    }
+
+    .about-hero h1 {
+        font-size: 28px;
+        margin-bottom: 9px;
+    }
+
+    .about-hero p {
+        color: #d9f0df;
+        line-height: 1.65;
+        max-width: 620px;
+    }
+
+    .about-stats {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .about-stat {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 12px;
+        min-width: 0;
+        padding: 13px;
+    }
+
+    .about-stat strong {
+        display: block;
+        font-size: 20px;
+        margin-bottom: 5px;
+        overflow-wrap: anywhere;
+    }
+
+    .about-stat span {
+        color: #d9f0df;
+        font-size: 12px;
+    }
+
+    .about-content {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .about-card {
+        background: #f3f8f4;
+        border: 1px solid #d8e2db;
+        border-radius: 14px;
+        box-shadow: 0 5px 16px rgba(22, 60, 50, 0.06);
+        padding: 21px 21px 21px 32px;
+        position: relative;
+    }
+
+    .about-card::before {
+        background: #286341;
+        border-radius: 999px;
+        bottom: 14px;
+        content: "";
+        left: 13px;
+        position: absolute;
+        top: 14px;
+        width: 6px;
+    }
+
+    .about-card-heading {
+        align-items: center;
+        display: flex;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .about-index {
+        align-items: center;
+        background: #e2f1e6;
+        border-radius: 9px;
+        color: #286341;
+        display: flex;
+        flex: 0 0 32px;
+        font-size: 12px;
+        font-weight: 700;
+        height: 32px;
+        justify-content: center;
+    }
+
+    .about-card h2 {
+        color: #163c32;
+        font-size: 17px;
+    }
+
+    .about-card p,
+    .about-card li {
+        color: #53645a;
+        font-size: 14px;
+        line-height: 1.65;
+    }
+
+    .about-card p + p {
+        margin-top: 10px;
+    }
+
+    .about-card ul,
+    .about-card ol {
+        margin: 8px 0 0 19px;
+    }
+
+    .about-card li + li {
+        margin-top: 5px;
+    }
+
+    .about-tech-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        list-style: none;
+        margin: 14px 0 0 !important;
+    }
+
+    .about-tech-list li {
+        background: #edf5ef;
+        border: 1px solid #d7e8dc;
+        border-radius: 999px;
+        color: #286341;
+        font-size: 12px;
+        line-height: 1.2;
+        margin: 0 !important;
+        padding: 7px 10px;
+    }
+
+    @media (max-width: 1000px) {
+        .about-hero {
+            grid-template-columns: 1fr;
+        }
+
+        .about-content {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .about-hero {
+            padding: 20px;
+        }
+
+        .about-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .about-stat {
+            padding: 11px;
+        }
+
+        .about-card {
+            padding: 17px 17px 17px 28px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="about-page">
+    <section class="about-hero">
+        <div>
+            <p class="about-kicker">Tentang aplikasi</p>
+            <h1>PadiPredict</h1>
+            <p>
+                PadiPredict membantu melihat data produksi padi di Sumatera,
+                membandingkan hasil antarwilayah, dan membuat perkiraan produksi
+                berdasarkan luas panen serta kondisi iklim.
+            </p>
+        </div>
+        <div class="about-stats" aria-label="Ringkasan dataset">
+            <div class="about-stat">
+                <strong>{{ jumlah_data }}</strong>
+                <span>Catatan data</span>
+            </div>
+            <div class="about-stat">
+                <strong>{{ jumlah_provinsi }}</strong>
+                <span>Provinsi</span>
+            </div>
+            <div class="about-stat">
+                <strong>{{ tahun_awal|default:"-" }}–{{ tahun_akhir|default:"-" }}</strong>
+                <span>Periode data</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="about-content">
+        <section class="about-card">
+            <div class="about-card-heading">
+                <span class="about-index">01</span>
+                <h2>Data yang digunakan</h2>
+            </div>
+            <p>
+                Dataset mencatat produksi padi dari {{ jumlah_provinsi }} provinsi
+                selama {{ tahun_awal|default:"-" }}–{{ tahun_akhir|default:"-" }}.
+                Data yang tersedia meliputi:
+            </p>
+            <ul>
+                <li>Provinsi dan tahun pencatatan</li>
+                <li>Produksi dan luas panen</li>
+                <li>Curah hujan, kelembapan, dan suhu rata-rata</li>
+            </ul>
+        </section>
+
+        <section class="about-card">
+            <div class="about-card-heading">
+                <span class="about-index">02</span>
+                <h2>Django di dalam aplikasi</h2>
+            </div>
+            <p>
+                PadiPredict dibuat dengan Django. Django mengatur alamat setiap
+                halaman, menerima input, dan menghubungkan tampilan dengan data.
+            </p>
+            <ul>
+                <li><strong>URL dan view:</strong> mengarahkan permintaan ke fungsi yang sesuai.</li>
+                <li><strong>Model dan ORM:</strong> membaca serta mengelola catatan padi di SQLite.</li>
+                <li><strong>Form:</strong> memeriksa input sebelum dipakai untuk prediksi.</li>
+                <li><strong>Template:</strong> menampilkan tabel, grafik, dan hasil ke halaman web.</li>
+                <li><strong>Django Admin:</strong> membantu mengelola data melalui panel administrator.</li>
+            </ul>
+            <ul class="about-tech-list" aria-label="Teknologi">
+                <li>Django</li>
+                <li>Python</li>
+                <li>SQLite</li>
+                <li>HTML dan CSS</li>
+            </ul>
+        </section>
+
+        <section class="about-card">
+            <div class="about-card-heading">
+                <span class="about-index">03</span>
+                <h2>Cara kerja prediksi</h2>
+            </div>
+            <p>
+                Pengguna memilih provinsi dan mengisi tahun, luas panen, curah
+                hujan, kelembapan, serta suhu rata-rata. Data tersebut kemudian
+                diproses oleh model untuk memperkirakan produksi.
+            </p>
+            <p>Dua model yang tersedia untuk dibandingkan:</p>
+            <ul>
+                <li><strong>Linear Regression</strong></li>
+                <li><strong>Random Forest</strong></li>
+            </ul>
+        </section>
+
+        <section class="about-card">
+            <div class="about-card-heading">
+                <span class="about-index">04</span>
+                <h2>Pelatihan dan evaluasi</h2>
+            </div>
+            <p>
+                Data tahun 1993–2015 dipakai untuk melatih model, sedangkan data
+                tahun 2016 dan seterusnya dipakai untuk pengujian. Hasilnya dinilai
+                dengan beberapa ukuran:
+            </p>
+            <ul>
+                <li><strong>MAE dan RMSE:</strong> menunjukkan besar kesalahan prediksi; makin kecil biasanya makin baik.</li>
+                <li><strong>R²:</strong> menunjukkan seberapa baik model menjelaskan variasi pada data uji.</li>
+            </ul>
+        </section>
+
+        <section class="about-card">
+            <div class="about-card-heading">
+                <span class="about-index">05</span>
+                <h2>Fitur yang tersedia</h2>
+            </div>
+            <ul>
+                <li><strong>Data Dataset:</strong> melihat catatan produksi padi.</li>
+                <li><strong>Analisis Data:</strong> membandingkan produksi per provinsi dan tahun.</li>
+                <li><strong>Prediksi Produksi:</strong> mencoba perkiraan dengan dua model.</li>
+                <li><strong>Evaluasi Model:</strong> melihat hasil pengujian model.</li>
+                <li><strong>Asisten AI:</strong> bertanya tentang aplikasi dan data.</li>
+                <li><strong>Administrator:</strong> mengelola data melalui Django Admin.</li>
+            </ul>
+        </section>
+
+        <section class="about-card about-callout">
+            <div class="about-card-heading">
+                <span class="about-index">06</span>
+                <h2>Catatan penggunaan</h2>
+            </div>
+            <p>
+                Hasil prediksi adalah perkiraan, bukan angka produksi yang pasti.
+                Pastikan satuan input sesuai dengan data yang digunakan. Hasil
+                sebaiknya menjadi bahan pertimbangan, bukan satu-satunya acuan.
+            </p>
+        </section>
+    </div>
+</div>
+{% endblock %}

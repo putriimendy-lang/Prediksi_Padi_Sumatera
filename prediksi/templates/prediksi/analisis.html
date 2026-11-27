@@ -1,0 +1,194 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Analisis Data | Prediksi Padi Sumatera{% endblock %}
+
+{% block extra_css %}
+<style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 1500px;
+            margin: auto;
+            padding: 0;
+        }
+
+        .header {
+            margin-bottom: 28px;
+        }
+
+        .header h1 {
+            color: #184e38;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #647568;
+            line-height: 1.6;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 14px;
+            border: 1px solid #d8e2db;
+            margin-bottom: 25px;
+        }
+
+        .card h3 {
+            color: #184e38;
+            margin-top: 0;
+        }
+
+        .charts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 350px;
+        }
+
+        .description {
+            color: #718075;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 1100px) {
+            .charts {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 0; }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header">
+        <h1>Analisis Data Produksi Padi</h1>
+        <p>
+            Analisis distribusi produksi padi di wilayah Sumatera
+            dan perkembangan produksi berdasarkan data historis.
+        </p>
+    </div>
+
+    <div class="charts">
+
+        <div class="card">
+            <h3>Produksi Berdasarkan Provinsi</h3>
+            <p class="description">
+                Perbandingan total produksi padi pada masing-masing provinsi
+                selama periode dataset.
+            </p>
+            <div class="chart-container">
+                <canvas id="provinsiChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Produksi Berdasarkan Tahun</h3>
+            <p class="description">
+                Perubahan total produksi padi dari tahun ke tahun
+                pada wilayah yang terdapat dalam dataset.
+            </p>
+            <div class="chart-container">
+                <canvas id="tahunChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{{ produksi_provinsi|json_script:"data-provinsi" }}
+{{ produksi_tahun|json_script:"data-tahun" }}
+
+<script>
+    const dataProvinsi = JSON.parse(
+        document.getElementById('data-provinsi').textContent
+    );
+
+    const dataTahun = JSON.parse(
+        document.getElementById('data-tahun').textContent
+    );
+
+    const labelsProvinsi = dataProvinsi.map(item => item.provinsi);
+    const nilaiProvinsi = dataProvinsi.map(item => item.total_produksi);
+
+    const labelsTahun = dataTahun.map(item => item.tahun);
+    const nilaiTahun = dataTahun.map(item => item.total_produksi);
+
+    new Chart(document.getElementById('provinsiChart'), {
+        type: 'bar',
+        data: {
+            labels: labelsProvinsi,
+            datasets: [{
+                label: 'Total Produksi',
+                data: nilaiProvinsi,
+                backgroundColor: '#4b956a',
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    new Chart(document.getElementById('tahunChart'), {
+        type: 'line',
+        data: {
+            labels: labelsTahun,
+            datasets: [{
+                label: 'Total Produksi',
+                data: nilaiTahun,
+                borderColor: '#26764c',
+                backgroundColor: 'rgba(38, 118, 76, 0.12)',
+                fill: true,
+                tension: 0.3,
+                pointRadius: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

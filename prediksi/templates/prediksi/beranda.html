@@ -1,0 +1,629 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Prediksi Produksi Padi</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #edf2ee;
+            color: #26352d;
+        }
+
+        .sidebar {
+            width: 230px;
+            height: 100vh;
+            background: #163c32;
+            color: white;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            background: #d9f0df;
+            color: #163c32;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+
+        .brand-text h2 {
+            font-size: 16px;
+        }
+
+        .brand-text p {
+            font-size: 11px;
+            color: #b9d2c5;
+            margin-top: 4px;
+        }
+
+        .menu-title {
+            font-size: 11px;
+            color: #a7c3b5;
+            margin: 10px 8px;
+            letter-spacing: 0.8px;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            margin-bottom: 2px;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 12px;
+            text-decoration: none;
+            color: #d4e3db;
+            border-radius: 10px;
+            transition: 0.2s;
+            font-size: 13px;
+        }
+
+        .menu a:hover {
+            background: #285747;
+            color: white;
+        }
+
+        .menu a.active {
+            background: #d9f0df;
+            color: #163c32;
+            font-weight: 600;
+            margin-right: -18px;
+            border-radius: 14px 0 0 14px;
+        }
+
+        .menu-icon {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 14px;
+            border: 1px solid #355c4c;
+            border-radius: 22px;
+            background: #1d473b;
+            font-size: 11px;
+            color: #b9d2c5;
+            line-height: 1.4;
+        }
+
+        .sidebar-footer strong {
+            display: block;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(185, 210, 197, 0.22);
+            color: white;
+            font-size: 14px;
+        }
+
+        .sidebar-footer span {
+            display: block;
+            margin-top: 9px;
+        }
+
+        .main {
+            margin-left: 230px;
+            padding: 28px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .topbar h1 {
+            font-size: 25px;
+            color: #163c32;
+        }
+
+        .topbar p {
+            color: #7b8b82;
+            margin-top: 7px;
+            font-size: 14px;
+        }
+
+        .badge-data {
+            background: #e0f1e5;
+            color: #286341;
+            padding: 10px 16px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .welcome {
+            background: linear-gradient(120deg, #1c493a, #36795b);
+            color: white;
+            padding: 30px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+        }
+
+        .welcome h2 {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .welcome p {
+            color: #d7e9dd;
+            font-size: 14px;
+            line-height: 1.7;
+            max-width: 750px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #d8e2db;
+            padding: 23px;
+            border-radius: 15px;
+            box-shadow: 0 5px 16px rgba(22,60,50,0.08);
+        }
+
+        .card-label {
+            font-size: 13px;
+            color: #7b8b82;
+            margin-bottom: 12px;
+        }
+
+        .card-value {
+            font-size: 27px;
+            font-weight: 700;
+            color: #163c32;
+        }
+
+        .card-desc {
+            font-size: 12px;
+            color: #98a49c;
+            margin-top: 8px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px;
+        }
+
+        .section-card {
+            background: white;
+            border: 1px solid #d8e2db;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 5px 16px rgba(22,60,50,0.08);
+        }
+
+        .section-card h3 {
+            color: #163c32;
+            font-size: 17px;
+            margin-bottom: 20px;
+        }
+
+        .province-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 13px 0;
+            border-bottom: 1px solid #edf1ee;
+            font-size: 14px;
+        }
+
+        .province-item:last-child {
+            border-bottom: none;
+        }
+
+        .province-name {
+            color: #46564c;
+        }
+
+        .province-value {
+            font-weight: 600;
+            color: #286341;
+        }
+
+        .province-card {
+            background: #286341;
+            border-color: #286341;
+        }
+
+        .province-card h3 {
+            color: white;
+        }
+
+        .province-card .province-item {
+            border-bottom-color: rgba(255,255,255,0.2);
+        }
+
+        .province-card .province-item:last-child {
+            border-bottom: none;
+        }
+
+        .province-card .province-name {
+            color: white;
+        }
+
+        .province-card .province-value {
+            color: #d9f0df;
+        }
+
+        .info-item {
+            padding: 15px;
+            background: #f4f8f5;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .info-item h4 {
+            color: #286341;
+            font-size: 14px;
+            margin-bottom: 7px;
+        }
+
+        .info-item p {
+            font-size: 13px;
+            color: #718077;
+            line-height: 1.6;
+        }
+
+        .footer {
+            text-align: center;
+            color: #9aa69e;
+            font-size: 12px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 1100px) {
+            .sidebar {
+                width: 210px;
+                padding: 20px 14px;
+            }
+
+            .menu a.active {
+                margin-right: -14px;
+            }
+
+            .main {
+                margin-left: 210px;
+                padding: 22px;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-height: 800px) and (min-width: 701px) {
+            .sidebar {
+                padding-top: 16px;
+                padding-bottom: 16px;
+            }
+
+            .brand {
+                margin-bottom: 16px;
+            }
+
+            .menu-title {
+                margin-top: 6px;
+                margin-bottom: 6px;
+            }
+
+            .menu li {
+                margin-bottom: 2px;
+            }
+
+            .menu a {
+                padding-top: 7px;
+                padding-bottom: 7px;
+            }
+
+            .sidebar-footer {
+                padding-top: 8px;
+                padding-bottom: 8px;
+            }
+
+            .main {
+                padding: 20px;
+            }
+
+            .welcome {
+                padding: 22px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .section-card {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .sidebar-footer {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 18px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">🌾</div>
+            <div class="brand-text">
+                <h2>PadiPredict</h2>
+                <p>Smart Agriculture System</p>
+            </div>
+        </div>
+
+        <p class="menu-title">MENU UTAMA</p>
+
+        <ul class="menu">
+            <li>
+                <a href="{% url 'beranda' %}" class="{% if halaman_aktif == 'beranda' %}active{% endif %}">
+                    <span class="menu-icon">⌂</span>
+                    <span class="menu-text">Dashboard</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'dataset' %}" class="{% if halaman_aktif == 'dataset' %}active{% endif %}">
+                    <span class="menu-icon">▤</span>
+                    <span class="menu-text">Data Dataset</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'analisis' %}" class="{% if halaman_aktif == 'analisis' %}active{% endif %}">
+                    <span class="menu-icon">▥</span>
+                    <span class="menu-text">Analisis Data</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'prediksi' %}" class="{% if halaman_aktif == 'prediksi' %}active{% endif %}">
+                    <span class="menu-icon">🌱</span>
+                    <span class="menu-text">Prediksi Produksi</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'evaluasi' %}" class="{% if halaman_aktif == 'evaluasi' %}active{% endif %}">
+                    <span class="menu-icon">▧</span>
+                    <span class="menu-text">Evaluasi Model</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'asisten' %}" class="{% if halaman_aktif == 'asisten' %}active{% endif %}">
+                    <span class="menu-icon">✦</span>
+                    <span class="menu-text">Asisten AI</span>
+                </a>
+            </li>
+        </ul>
+
+        <p class="menu-title">LAINNYA</p>
+
+        <ul class="menu">
+            <li>
+                <a href="{% url 'tentang' %}" class="{% if halaman_aktif == 'tentang' %}active{% endif %}">
+                    <span class="menu-icon">ⓘ</span>
+                    <span class="menu-text">Tentang Sistem</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'admin:index' %}">
+                    <span class="menu-icon">⚙</span>
+                    <span class="menu-text">Administrator</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <strong>PadiPredict</strong>
+            <span>Prediksi Produksi Padi Sumatera</span>
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <div class="topbar">
+            <div>
+                <h1>Dashboard</h1>
+                <p>Ringkasan data dan informasi produksi padi di Pulau Sumatera.</p>
+            </div>
+
+            <div class="badge-data">
+                Data Tahun 1993 - 2020
+            </div>
+        </div>
+
+        <section class="welcome">
+            <h2>Selamat Datang di PadiPredict 🌾</h2>
+            <p>
+                Lihat data produksi padi di Sumatera dan perkiraan hasil panen
+                berdasarkan luas panen serta kondisi iklim.
+            </p>
+        </section>
+
+        <section class="stats">
+
+            <div class="card">
+                <div class="card-label">Total Data</div>
+                <div class="card-value">{{ jumlah_data }}</div>
+                <div class="card-desc">Data produksi padi</div>
+            </div>
+
+            <div class="card">
+                <div class="card-label">Jumlah Provinsi</div>
+                <div class="card-value">{{ jumlah_provinsi }}</div>
+                <div class="card-desc">Provinsi di Pulau Sumatera</div>
+            </div>
+
+            <div class="card">
+                <div class="card-label">Tahun Awal</div>
+                <div class="card-value">{{ tahun_awal }}</div>
+                <div class="card-desc">Awal periode dataset</div>
+            </div>
+
+            <div class="card">
+                <div class="card-label">Tahun Akhir</div>
+                <div class="card-value">{{ tahun_akhir }}</div>
+                <div class="card-desc">Akhir periode dataset</div>
+            </div>
+
+        </section>
+
+        <section class="content-grid">
+
+            <div class="section-card">
+                <h3>Gambaran Data</h3>
+
+                <div class="info-item">
+                    <h4>Dataset Produksi Padi</h4>
+                    <p>
+                        Dataset berisi informasi produksi padi dari beberapa
+                        provinsi di Pulau Sumatera berdasarkan periode
+                        tahun 1993 hingga 2020.
+                    </p>
+                </div>
+
+                <div class="info-item">
+                    <h4>Variabel yang Digunakan</h4>
+                    <p>
+                        Data mencakup provinsi, tahun, produksi, luas panen,
+                        curah hujan, kelembapan dan suhu rata-rata.
+                    </p>
+                </div>
+
+                <div class="info-item">
+                    <h4>Metode Machine Learning</h4>
+                    <p>
+                        Sistem menggunakan Linear Regression dan Random Forest
+                        untuk membandingkan hasil prediksi produksi padi.
+                    </p>
+                </div>
+            </div>
+
+            <div class="section-card province-card">
+                <h3>Provinsi dalam Dataset</h3>
+
+                <div class="province-item">
+                    <span class="province-name">Aceh</span>
+                    <span class="province-value">Sumatera</span>
+                </div>
+
+                <div class="province-item">
+                    <span class="province-name">Sumatera Utara</span>
+                    <span class="province-value">Sumatera</span>
+                </div>
+
+                <div class="province-item">
+                    <span class="province-name">Sumatera Barat</span>
+                    <span class="province-value">Sumatera</span>
+                </div>
+
+                <div class="province-item">
+                    <span class="province-name">Riau</span>
+                    <span class="province-value">Sumatera</span>
+                </div>
+
+                <div class="province-item">
+                    <span class="province-name">Jambi</span>
+                    <span class="province-value">Sumatera</span>
+                </div>
+
+                <div class="province-item">
+                    <span class="province-name">Sumatera Selatan</span>
+                    <span class="province-value">Sumatera</span>
+                </div>
+
+                <div class="province-item">
+                    <span class="province-name">Bengkulu</span>
+                    <span class="province-value">Sumatera</span>
+                </div>
+
+                <div class="province-item">
+                    <span class="province-name">Lampung</span>
+                    <span class="province-value">Sumatera</span>
+                </div>
+
+            </div>
+
+        </section>
+
+        <div class="footer">
+            PadiPredict | Sistem Prediksi Produksi Padi di Pulau Sumatera
+            menggunakan Machine Learning
+        </div>
+
+    </main>
+
+</body>
+</html>

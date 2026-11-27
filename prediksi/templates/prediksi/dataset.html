@@ -1,0 +1,186 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Data Dataset | PadiPredict{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dataset-container {
+        width: 100%;
+        max-width: 1500px;
+        margin: auto;
+    }
+
+    .dataset-header {
+        margin-bottom: 25px;
+    }
+
+    .dataset-header h1 {
+        margin-bottom: 10px;
+        color: #184e38;
+    }
+
+    .dataset-header p {
+        color: #647568;
+        line-height: 1.6;
+    }
+
+    .dataset-summary {
+        background: #286341;
+        border-radius: 24px;
+        padding: 22px;
+        margin-bottom: 25px;
+        border: 1px solid #286341;
+        box-shadow: 0 5px 16px rgba(22,60,50,0.08);
+    }
+
+    .dataset-summary small {
+        color: #d9f0df;
+    }
+
+    .dataset-summary h2 {
+        margin: 10px 0;
+        color: white;
+        font-size: 28px;
+    }
+
+    .dataset-table-card {
+        background: white;
+        border-radius: 12px;
+        border: 1px solid #d8e2db;
+        box-shadow: 0 5px 16px rgba(22,60,50,0.08);
+        overflow: hidden;
+    }
+
+    .dataset-table-header {
+        padding: 22px;
+        border-bottom: 1px solid #e9eee9;
+    }
+
+    .dataset-table-header h3 {
+        margin: 0 0 8px;
+        color: #184e38;
+    }
+
+    .dataset-table-header p {
+        margin: 0;
+        color: #758276;
+        font-size: 14px;
+    }
+
+    .dataset-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .dataset-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        min-width: 1000px;
+    }
+
+    .dataset-table th {
+        background: #286341;
+        color: white;
+        padding: 14px;
+        text-align: left;
+        font-size: 13px;
+    }
+
+    .dataset-table th:first-child {
+        border-radius: 999px 0 0 999px;
+    }
+
+    .dataset-table th:last-child {
+        border-radius: 0 999px 999px 0;
+    }
+
+    .dataset-table td {
+        padding: 13px 14px;
+        border-bottom: 1px solid #edf1ed;
+        font-size: 13px;
+    }
+
+    .dataset-table tbody tr:hover {
+        background: #f7faf7;
+    }
+
+    .dataset-number {
+        color: #718075;
+    }
+
+    .dataset-footer {
+        margin-top: 20px;
+        font-size: 13px;
+        color: #788579;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="dataset-container">
+
+    <div class="dataset-header">
+        <h1>Data Produksi Padi Sumatera</h1>
+        <p>
+            Halaman ini menampilkan dataset yang digunakan
+            dalam proses analisis dan pemodelan prediksi
+            hasil produksi padi di Pulau Sumatera.
+        </p>
+    </div>
+
+    <div class="dataset-summary">
+        <small>Total Data Dataset</small>
+        <h2>{{ jumlah_data }} Data</h2>
+        <small>8 Provinsi · Periode 1993–2020</small>
+    </div>
+
+    <div class="dataset-table-card">
+
+        <div class="dataset-table-header">
+            <h3>Data Historis Produksi Padi</h3>
+            <p>Data produksi padi dan faktor pendukungnya</p>
+        </div>
+
+        <div class="dataset-table-wrapper">
+            <table class="dataset-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Provinsi</th>
+                        <th>Tahun</th>
+                        <th>Produksi</th>
+                        <th>Luas Panen</th>
+                        <th>Curah Hujan</th>
+                        <th>Kelembapan</th>
+                        <th>Suhu Rata-rata</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in data_padi %}
+                    <tr>
+                        <td class="dataset-number">{{ forloop.counter }}</td>
+                        <td>{{ item.provinsi }}</td>
+                        <td>{{ item.tahun }}</td>
+                        <td>{{ item.produksi }}</td>
+                        <td>{{ item.luas_panen }}</td>
+                        <td>{{ item.curah_hujan }}</td>
+                        <td>{{ item.kelembapan }}</td>
+                        <td>{{ item.suhu_rata_rata }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="dataset-footer">
+        Sumber data digunakan untuk analisis dan prediksi produksi padi.
+    </div>
+
+</div>
+
+{% endblock %}

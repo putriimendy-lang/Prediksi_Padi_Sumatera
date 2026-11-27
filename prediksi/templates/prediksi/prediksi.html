@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+
+{% block title %}Prediksi Produksi | PadiPredict{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-heading {
+        margin-bottom: 25px;
+    }
+
+    .page-heading h1 {
+        color: #184e38;
+        margin-bottom: 10px;
+    }
+
+    .page-heading p,
+    .page-description {
+        color: #647568;
+        line-height: 1.6;
+    }
+
+    .prediction-panel {
+        background: white;
+        border: 1px solid #d8e2db;
+        border-radius: 14px;
+        box-shadow: 0 5px 16px rgba(22,60,50,0.08);
+        padding: 22px;
+        max-width: 1100px;
+    }
+
+    .prediction-form {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 16px;
+    }
+
+    .form-field label {
+        display: block;
+        color: #34483b;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+
+    .form-field input,
+    .form-field select {
+        width: 100%;
+        border: 1px solid #d5e0d8;
+        border-radius: 8px;
+        padding: 10px 11px;
+        font-size: 13px;
+    }
+
+    .field-error {
+        color: #a12622;
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    .submit-button {
+        align-self: end;
+        border: 0;
+        border-radius: 8px;
+        background: #286341;
+        color: white;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 12px 18px;
+    }
+
+    .result-panel {
+        margin-top: 20px;
+        border-radius: 12px;
+        background: #eaf3ed;
+        color: #184e38;
+        padding: 20px;
+    }
+
+    .result-panel h2 {
+        margin-bottom: 8px;
+    }
+
+    .result-value {
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .history-panel {
+        background: white;
+        border: 1px solid #d8e2db;
+        border-radius: 14px;
+        box-shadow: 0 5px 16px rgba(22,60,50,0.08);
+        margin-top: 24px;
+        max-width: 1100px;
+        overflow: hidden;
+    }
+
+    .history-heading {
+        align-items: center;
+        border-bottom: 1px solid #e4eae4;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 18px 22px;
+    }
+
+    .history-heading h2 {
+        color: #184e38;
+        font-size: 18px;
+    }
+
+    .history-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .history-table {
+        border-collapse: collapse;
+        min-width: 1000px;
+        width: 100%;
+    }
+
+    .history-table th,
+    .history-table td {
+        padding: 12px;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .history-table th {
+        background: #286341;
+        color: white;
+        font-size: 13px;
+    }
+
+    .history-table td {
+        border-bottom: 1px solid #edf1ed;
+        font-size: 13px;
+    }
+
+    .history-table tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .history-clear-button {
+        background: transparent;
+        border: 1px solid #b9d9c4;
+        border-radius: 999px;
+        color: #286341;
+        cursor: pointer;
+        padding: 8px 12px;
+    }
+
+    .history-empty {
+        color: #647568;
+        padding: 20px 22px;
+    }
+
+    @media (max-width: 700px) {
+        .prediction-form {
+            grid-template-columns: 1fr;
+        }
+
+        .history-heading {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <h1>Prediksi Produksi Padi</h1>
+    <p>Masukkan kondisi wilayah dan pilih model untuk memperkirakan produksi padi.</p>
+</section>
+
+<section class="prediction-panel">
+    <p class="page-description">
+        Hasil prediksi merupakan estimasi model berdasarkan data historis dan bukan jaminan hasil aktual.
+    </p>
+
+    <form method="post" class="prediction-form">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% for error in field.errors %}
+            <p class="field-error">{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="submit-button">Hitung Prediksi</button>
+    </form>
+
+    {% if hasil_terakhir %}
+    <div class="result-panel" role="status">
+        <h2>Hasil Prediksi</h2>
+        <p>Model: {{ hasil_terakhir.model }}</p>
+        <p class="result-value">{{ hasil_terakhir.nilai|floatformat:0 }} ton</p>
+    </div>
+    {% endif %}
+</section>
+
+<section class="history-panel" aria-labelledby="prediction-history-title">
+    <div class="history-heading">
+        <h2 id="prediction-history-title">Riwayat Prediksi</h2>
+        {% if riwayat_prediksi %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="aksi" value="hapus_riwayat">
+            <button type="submit" class="history-clear-button">Hapus riwayat</button>
+        </form>
+        {% endif %}
+    </div>
+
+    {% if riwayat_prediksi %}
+    <div class="history-table-wrapper">
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Waktu</th>
+                    <th>Provinsi</th>
+                    <th>Tahun</th>
+                    <th>Luas Panen</th>
+                    <th>Curah Hujan</th>
+                    <th>Kelembapan</th>
+                    <th>Suhu Rata-rata</th>
+                    <th>Model</th>
+                    <th>Hasil Prediksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in riwayat_prediksi %}
+                <tr>
+                    <td>{{ item.waktu }}</td>
+                    <td>{{ item.provinsi }}</td>
+                    <td>{{ item.tahun }}</td>
+                    <td>{{ item.luas_panen|floatformat:2 }}</td>
+                    <td>{{ item.curah_hujan|floatformat:2 }}</td>
+                    <td>{{ item.kelembapan|floatformat:2 }}%</td>
+                    <td>{{ item.suhu_rata_rata|floatformat:2 }}°C</td>
+                    <td>{{ item.model }}</td>
+                    <td>{{ item.hasil|floatformat:0 }} ton</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="history-empty">Belum ada riwayat prediksi di sesi ini.</p>
+    {% endif %}
+</section>
+{% endblock %}

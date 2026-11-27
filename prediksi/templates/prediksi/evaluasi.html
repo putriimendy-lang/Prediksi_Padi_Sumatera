@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Evaluasi Model | PadiPredict{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-heading {
+        margin-bottom: 25px;
+    }
+
+    .page-heading h1 {
+        color: #184e38;
+        margin-bottom: 10px;
+    }
+
+    .page-heading p,
+    .evaluation-note {
+        color: #647568;
+        line-height: 1.6;
+    }
+
+    .evaluation-card {
+        background: white;
+        border: 1px solid #d8e2db;
+        border-radius: 14px;
+        overflow-x: auto;
+        padding: 22px;
+        box-shadow: 0 5px 16px rgba(22,60,50,0.08);
+    }
+
+    .evaluation-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        min-width: 600px;
+    }
+
+    .evaluation-table th,
+    .evaluation-table td {
+        border-bottom: 1px solid #edf1ed;
+        padding: 14px;
+        text-align: left;
+    }
+
+    .evaluation-table th {
+        background: #286341;
+        color: white;
+    }
+
+    .evaluation-table th:first-child {
+        border-radius: 999px 0 0 999px;
+    }
+
+    .evaluation-table th:last-child {
+        border-radius: 0 999px 999px 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <h1>Evaluasi Model</h1>
+    <p>Perbandingan performa model pada data pengujian.</p>
+</section>
+
+<section class="evaluation-card">
+    <table class="evaluation-table">
+        <thead>
+            <tr>
+                <th>Model</th>
+                <th>MAE</th>
+                <th>RMSE</th>
+                <th>R²</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hasil in hasil_evaluasi %}
+            <tr>
+                <td>{{ hasil.Model }}</td>
+                <td>{{ hasil.MAE }}</td>
+                <td>{{ hasil.RMSE }}</td>
+                <td>{{ hasil.R2 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">Belum ada hasil evaluasi model.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p class="evaluation-note">
+        MAE dan RMSE mengukur besar kesalahan prediksi; nilai yang lebih rendah umumnya lebih baik.
+        R² menunjukkan proporsi variasi data yang dapat dijelaskan model.
+    </p>
+</section>
+{% endblock %}
